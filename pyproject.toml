@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.12.*"
 fastapi = "^0.111.0"
+pydantic = "1.10.12"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -33,6 +34,7 @@ preview = true
 quote-style = 'single'
 
 [tool.taskipy.tasks]
+pre_run = 'task format && task lint'
 run = 'fastapi dev fast_zero/app.py'
 pre_test = 'task format && task lint'
 test = 'pytest --cov=fast_zero -vv'
