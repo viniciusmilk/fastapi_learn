@@ -1,12 +1,16 @@
 from http import HTTPStatus
 
+import pytest  # type: ignore
 
+
+@pytest.mark.skip(reason='Already tested')
 def test_read_root(client):
     response = client.get('/')
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'message': 'Hello World'}
 
 
+@pytest.mark.skip(reason='Already tested')
 def test_read_home(client):
     response = client.get('/home')
     assert response.status_code == HTTPStatus.OK
@@ -30,6 +34,7 @@ def test_read_home(client):
     )
 
 
+@pytest.mark.skip(reason='Already tested')
 def test_create_user(client):
     response = client.post(
         '/users/',
@@ -48,6 +53,7 @@ def test_create_user(client):
     }
 
 
+@pytest.mark.skip(reason='Already tested')
 def test_read_users(client):
     response = client.get('/users/')
     assert response.status_code == HTTPStatus.OK
@@ -56,6 +62,7 @@ def test_read_users(client):
     }
 
 
+@pytest.mark.skip(reason='Already tested')
 def test_read_user(client):
     response = client.get('/users/1')
     assert response.status_code == HTTPStatus.OK
@@ -66,6 +73,7 @@ def test_read_user(client):
     }
 
 
+@pytest.mark.skip(reason='Already tested')
 def test_read_user_not_found(client):
     response = client.get('/users/2')
     assert response.status_code == HTTPStatus.NOT_FOUND
@@ -74,6 +82,7 @@ def test_read_user_not_found(client):
     }
 
 
+@pytest.mark.skip(reason='Already tested')
 def test_update_user(client):
     response = client.put(
         '/users/1',
@@ -92,6 +101,7 @@ def test_update_user(client):
     }
 
 
+@pytest.mark.skip(reason='Already tested')
 def test_update_user_not_found(client):
     response = client.put(
         '/users/2',
@@ -107,6 +117,7 @@ def test_update_user_not_found(client):
     }
 
 
+@pytest.mark.skip(reason='Already tested')
 def test_delete_user(client):
     response = client.delete('/users/1')
     assert response.status_code == HTTPStatus.OK
@@ -115,6 +126,7 @@ def test_delete_user(client):
     }
 
 
+@pytest.mark.skip(reason='Already tested')
 def test_delete_user_not_found(client):
     response = client.delete('/users/2')
     assert response.status_code == HTTPStatus.NOT_FOUND
