@@ -2,6 +2,8 @@ from http import HTTPStatus
 
 import pytest  # type: ignore
 
+from fast_zero.schemas import UserPublic
+
 
 @pytest.mark.skip(reason='Already tested')
 def test_read_root(client):
@@ -37,7 +39,7 @@ def test_read_home(client):
 @pytest.mark.skip(reason='Already tested')
 def test_create_user(client):
     response = client.post(
-        '/users/',
+        '/users',
         json={
             'username': 'snoopy',
             'email': 'snoopy@email.com',
@@ -55,26 +57,29 @@ def test_create_user(client):
 
 @pytest.mark.skip(reason='Already tested')
 def test_read_users(client):
-    response = client.get('/users/')
+    response = client.get('/users')
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'users': [{'id': 1, 'username': 'snoopy', 'email': 'snoopy@email.com'}]
-    }
+    assert response.json() == {'users': []}
 
 
 @pytest.mark.skip(reason='Already tested')
-def test_read_user(client):
+def test_read_users_with_user(client, user):
+    user_schema = UserPublic.model_validate(user).model_dump()
+    response = client.get('/users')
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'users': [user_schema]}
+
+
+@pytest.mark.skip(reason='Already tested')
+def test_read_user(client, user):
+    user_schema = UserPublic.model_validate(user).model_dump()
     response = client.get('/users/1')
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': 1,
-        'username': 'snoopy',
-        'email': 'snoopy@email.com',
-    }
+    assert response.json() == user_schema
 
 
 @pytest.mark.skip(reason='Already tested')
-def test_read_user_not_found(client):
+def test_read_user_not_found(client, user):
     response = client.get('/users/2')
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {
@@ -83,7 +88,7 @@ def test_read_user_not_found(client):
 
 
 @pytest.mark.skip(reason='Already tested')
-def test_update_user(client):
+def test_update_user(client, user):
     response = client.put(
         '/users/1',
         json={
@@ -102,7 +107,7 @@ def test_update_user(client):
 
 
 @pytest.mark.skip(reason='Already tested')
-def test_update_user_not_found(client):
+def test_update_user_not_found(client, user):
     response = client.put(
         '/users/2',
         json={
@@ -118,7 +123,7 @@ def test_update_user_not_found(client):
 
 
 @pytest.mark.skip(reason='Already tested')
-def test_delete_user(client):
+def test_delete_user(client, user):
     response = client.delete('/users/1')
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
@@ -127,7 +132,7 @@ def test_delete_user(client):
 
 
 @pytest.mark.skip(reason='Already tested')
-def test_delete_user_not_found(client):
+def test_delete_user_not_found(client, user):
     response = client.delete('/users/2')
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {
