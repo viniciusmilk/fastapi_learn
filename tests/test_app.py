@@ -56,6 +56,34 @@ def test_create_user(client):
 
 
 @pytest.mark.skip(reason='Already tested')
+def test_create_user_username_exists(client, user):
+    response = client.post(
+        '/users',
+        json={
+            'username': 'snoopy',
+            'email': 'snoopy@email.com',
+            'password': 'secret_of_snoopy',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+
+
+@pytest.mark.skip(reason='Already tested')
+def test_create_user_email_exists(client, user):
+    response = client.post(
+        '/users',
+        json={
+            'username': 'snoopy2',
+            'email': 'snoopy@email.com',
+            'password': 'secret_of_snoopy',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+
+
+@pytest.mark.skip(reason='Already tested')
 def test_read_users(client):
     response = client.get('/users')
     assert response.status_code == HTTPStatus.OK
