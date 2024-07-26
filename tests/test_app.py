@@ -1,42 +1,16 @@
 from http import HTTPStatus
 
-import pytest  # type: ignore
-
 from fast_zero.schemas import UserPublic
 
 
-@pytest.mark.skip(reason='Already tested')
+# @pytest.mark.skip(reason='Already tested')
 def test_read_root(client):
     response = client.get('/')
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'message': 'Hello World'}
 
 
-@pytest.mark.skip(reason='Already tested')
-def test_read_home(client):
-    response = client.get('/home')
-    assert response.status_code == HTTPStatus.OK
-    assert response.headers['content-type'] == 'text/html; charset=utf-8'
-    assert (
-        response.text
-        == """
-    <!DOCTYPE html>
-    <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-    </head>
-    <body>
-        <h1>Hello, World!</h1>
-        <p>Este é um parágrafo.</p>
-    </body>
-    </html>
-    """
-    )
-
-
-@pytest.mark.skip(reason='Already tested')
+# @pytest.mark.skip(reason='Already tested')
 def test_create_user(client):
     response = client.post(
         '/users',
@@ -55,7 +29,7 @@ def test_create_user(client):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
+# @pytest.mark.skip(reason='Already tested')
 def test_create_user_username_exists(client, user):
     response = client.post(
         '/users',
@@ -69,7 +43,7 @@ def test_create_user_username_exists(client, user):
     assert response.status_code == HTTPStatus.BAD_REQUEST
 
 
-@pytest.mark.skip(reason='Already tested')
+# @pytest.mark.skip(reason='Already tested')
 def test_create_user_email_exists(client, user):
     response = client.post(
         '/users',
@@ -83,14 +57,14 @@ def test_create_user_email_exists(client, user):
     assert response.status_code == HTTPStatus.BAD_REQUEST
 
 
-@pytest.mark.skip(reason='Already tested')
+# @pytest.mark.skip(reason='Already tested')
 def test_read_users(client):
     response = client.get('/users')
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'users': []}
 
 
-@pytest.mark.skip(reason='Already tested')
+# @pytest.mark.skip(reason='Already tested')
 def test_read_users_with_user(client, user):
     user_schema = UserPublic.model_validate(user).model_dump()
     response = client.get('/users')
@@ -98,7 +72,7 @@ def test_read_users_with_user(client, user):
     assert response.json() == {'users': [user_schema]}
 
 
-@pytest.mark.skip(reason='Already tested')
+# @pytest.mark.skip(reason='Already tested')
 def test_read_user(client, user):
     user_schema = UserPublic.model_validate(user).model_dump()
     response = client.get('/users/1')
@@ -106,7 +80,7 @@ def test_read_user(client, user):
     assert response.json() == user_schema
 
 
-@pytest.mark.skip(reason='Already tested')
+# @pytest.mark.skip(reason='Already tested')
 def test_read_user_not_found(client, user):
     response = client.get('/users/2')
     assert response.status_code == HTTPStatus.NOT_FOUND
@@ -115,10 +89,11 @@ def test_read_user_not_found(client, user):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
-def test_update_user(client, user):
+# @pytest.mark.skip(reason='Already tested')
+def test_update_user(client, user, token):
     response = client.put(
-        '/users/1',
+        f'/users/{user.id}',
+        headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'poo',
             'email': 'poo@email.com',
@@ -128,41 +103,80 @@ def test_update_user(client, user):
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
-        'id': 1,
+        'id': user.id,
         'username': 'poo',
         'email': 'poo@email.com',
     }
 
 
-@pytest.mark.skip(reason='Already tested')
-def test_update_user_not_found(client, user):
+# @pytest.mark.skip(reason='Already tested')
+def test_update_user_not_current_user(client, user, token):
     response = client.put(
-        '/users/2',
+        f'/users/{user.id + 1}',
+        headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'string',
             'email': 'user@example.com',
             'password': 'string',
         },
     )
-    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.status_code == HTTPStatus.FORBIDDEN
     assert response.json() == {
-        'detail': 'User not found',
+        'detail': 'Not enough permissions',
     }
 
 
-@pytest.mark.skip(reason='Already tested')
-def test_delete_user(client, user):
-    response = client.delete('/users/1')
+# @pytest.mark.skip(reason='Already tested')
+def test_delete_user(client, user, token):
+    response = client.delete(
+        f'/users/{user.id}', headers={'Authorization': f'Bearer {token}'}
+    )
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
         'message': 'User deleted successfully',
     }
 
 
-@pytest.mark.skip(reason='Already tested')
-def test_delete_user_not_found(client, user):
-    response = client.delete('/users/2')
-    assert response.status_code == HTTPStatus.NOT_FOUND
+# @pytest.mark.skip(reason='Already tested')
+def test_delete_user_not_found(client, user, token):
+    response = client.delete(
+        f'/users/{user.id + 1}', headers={'Authorization': f'Bearer {token}'}
+    )
+    assert response.status_code == HTTPStatus.FORBIDDEN
     assert response.json() == {
-        'detail': 'User not found',
+        'detail': 'Not enough permissions',
     }
+
+
+# @pytest.mark.skip(reason='Already tested')
+def test_login_for_access_token(client, user):
+    response = client.post(
+        '/token',
+        data={'username': user.email, 'password': user.clean_password},
+    )
+
+    token = response.json()
+
+    assert response.status_code == HTTPStatus.OK
+    assert 'access_token' in token
+    assert 'token_type' in token
+
+
+# @pytest.mark.skip(reason='Already tested')
+def test_login_for_access_token_non_existent_user(client, user):
+    response = client.post(
+        '/token',
+        data={'username': 'user.email', 'password': user.clean_password},
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+
+
+# @pytest.mark.skip(reason='Already tested')
+def test_login_for_access_token_incorrect_password(client, user):
+    response = client.post(
+        '/token',
+        data={'username': user.email, 'password': 'user.clean_password'},
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
