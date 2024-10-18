@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from jwt import decode
 
-from fast_zero.security import SECRET_KEY, create_access_token
+from ..fast_zero.security import create_access_token, settings
 
 
 # @pytest.mark.skip(reason='Already tested')
@@ -10,7 +10,9 @@ def test_create_access_token():
     data = {'secret': 'Meu segredo'}
     token = create_access_token(data)
 
-    decoded_data = decode(token, SECRET_KEY, algorithms=['HS256'])
+    decoded_data = decode(
+        token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+    )
 
     assert data['secret'] == decoded_data['secret']
     assert 'exp' in decoded_data

@@ -1,6 +1,6 @@
 from sqlalchemy import select
 
-from fast_zero.models import User
+from ..fast_zero.models import User
 
 
 # @pytest.mark.skip(reason='Already tested')
