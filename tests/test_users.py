@@ -33,7 +33,10 @@ def test_create_user_username_exists(client, user):
         },
     )
 
-    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.json() == {
+        'detail': 'Username or email already exists',
+    }
 
 
 # @pytest.mark.skip(reason='Already tested')
@@ -47,7 +50,10 @@ def test_create_user_email_exists(client, user):
         },
     )
 
-    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.json() == {
+        'detail': 'Username or email already exists',
+    }
 
 
 # @pytest.mark.skip(reason='Already tested')
@@ -88,34 +94,51 @@ def test_update_user(client, user, token):
         f'/users/{user.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
-            'username': 'poo',
-            'email': 'poo@email.com',
-            'password': 'secret_of_poo',
+            'username': 'new_username',
+            'email': 'new_email@email.com',
+            'password': 'new_password',
         },
     )
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
         'id': user.id,
-        'username': 'poo',
-        'email': 'poo@email.com',
+        'username': 'new_username',
+        'email': 'new_email@email.com',
     }
 
 
 # @pytest.mark.skip(reason='Already tested')
-def test_update_user_not_current_user(client, other_user, token):
+def test_update_user_not_current_user(client, user, other_user, token):
     response = client.put(
         f'/users/{other_user.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
-            'username': 'string',
-            'email': 'user@example.com',
-            'password': 'string',
+            'username': user.username,
+            'email': user.email,
+            'password': user.password,
         },
     )
     assert response.status_code == HTTPStatus.FORBIDDEN
     assert response.json() == {
         'detail': 'Not enough permissions',
+    }
+
+
+# @pytest.mark.skip(reason='Already tested')
+def test_update_user_integrity_error(client, user, other_user, token):
+    response = client.put(
+        f'/users/{user.id}',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'username': other_user.username,
+            'email': other_user.email,
+            'password': other_user.password,
+        },
+    )
+    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.json() == {
+        'detail': 'Username or email already exists',
     }
 
 
