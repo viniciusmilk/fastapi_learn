@@ -27,8 +27,8 @@ def test_create_user_username_exists(client, user):
     response = client.post(
         '/users',
         json={
-            'username': 'snoopy',
-            'email': 'snoopy@email.com',
+            'username': user.username,
+            'email': 'email_inexistent@email.com',
             'password': 'secret_of_snoopy',
         },
     )
@@ -41,8 +41,8 @@ def test_create_user_email_exists(client, user):
     response = client.post(
         '/users',
         json={
-            'username': 'snoopy2',
-            'email': 'snoopy@email.com',
+            'username': 'username_inexistent',
+            'email': user.email,
             'password': 'secret_of_snoopy',
         },
     )
@@ -103,9 +103,9 @@ def test_update_user(client, user, token):
 
 
 # @pytest.mark.skip(reason='Already tested')
-def test_update_user_not_current_user(client, user, token):
+def test_update_user_not_current_user(client, other_user, token):
     response = client.put(
-        f'/users/{user.id + 1}',
+        f'/users/{other_user.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'string',
@@ -131,9 +131,9 @@ def test_delete_user(client, user, token):
 
 
 # @pytest.mark.skip(reason='Already tested')
-def test_delete_user_not_found(client, user, token):
+def test_delete_user_not_found(client, other_user, token):
     response = client.delete(
-        f'/users/{user.id + 1}', headers={'Authorization': f'Bearer {token}'}
+        f'/users/{other_user.id}', headers={'Authorization': f'Bearer {token}'}
     )
     assert response.status_code == HTTPStatus.FORBIDDEN
     assert response.json() == {

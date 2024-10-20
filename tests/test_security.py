@@ -39,6 +39,7 @@ def test_get_current_user_user_not_found(client):
     assert response.json() == {'detail': 'Could not validate credentials'}
 
 
+# @pytest.mark.skip(reason='Already tested')
 def test_get_current_user_user_found(client):
     token = create_access_token({})
     response = client.delete(
