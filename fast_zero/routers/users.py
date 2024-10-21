@@ -102,6 +102,7 @@ def update_user(
             detail='Username or email already exists',
         )
 
+
 @router.delete('/{user_id}', response_model=Message)
 def delete_user(
     user_id: int,
