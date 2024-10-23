@@ -5,7 +5,8 @@ from fast_zero.models import TodoState
 from .conftest import TodoFactory
 
 
-def test_create_todo(client, token):
+def test_create_todo(client, token, mock_db_time):
+    time = mock_db_time
     response = client.post(
         '/todos/',
         headers={'Authorization': f'Bearer {token}'},
@@ -22,6 +23,8 @@ def test_create_todo(client, token):
         'title': 'Buy milk',
         'description': 'Buy milk for breakfast',
         'state': 'todo',
+        'created_at': time.isoformat().split('.')[0],
+        'updated_at': time.isoformat().split('.')[0],
     }
 
 
@@ -150,6 +153,33 @@ def test_list_todos_filter_combined_should_return_5_todos(
     )
 
     assert len(response.json()['todos']) == expected_todos
+
+
+def test_list_todos_should_return_all_expected_fields(
+    session, client, user, token
+):
+    todo = TodoFactory(user_id=user.id)
+
+    session.add(todo)
+    session.commit()
+    session.refresh(todo)
+
+    response = client.get(
+        '/todos/',
+        headers={'Authorization': f'Bearer {token}'},
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json()['todos'] == [
+        {
+            'id': todo.id,
+            'title': todo.title,
+            'description': todo.description,
+            'state': todo.state,
+            'created_at': todo.created_at.isoformat().split('.')[0],
+            'updated_at': todo.updated_at.isoformat().split('.')[0],
+        }
+    ]
 
 
 def test_patch_todo_task_not_found(client, token):

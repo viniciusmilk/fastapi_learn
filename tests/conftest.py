@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 import factory
 import factory.fuzzy
 import pytest
@@ -91,3 +93,8 @@ def token(client, user):
     )
 
     return response.json()['access_token']
+
+
+@pytest.fixture
+def mock_db_time():
+    return datetime.now(timezone.utc)
