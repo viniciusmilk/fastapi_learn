@@ -23,12 +23,8 @@ class User:
     username: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
     email: Mapped[str] = mapped_column(unique=True)
-    created_at: Mapped[datetime] = mapped_column(
-        init=False, server_default=func.now()
-    )
-    updated_at: Mapped[datetime] = mapped_column(
-        init=False, onupdate=func.now(), nullable=True
-    )
+    created_at: Mapped[datetime] = mapped_column(init=False, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(init=False, onupdate=func.now(), nullable=True)
 
     todos: Mapped[list['Todo']] = relationship(
         init=False, back_populates='user', cascade='all, delete-orphan'
@@ -48,9 +44,7 @@ class Todo:
 
     user: Mapped[User] = relationship(init=False, back_populates='todos')
 
-    created_at: Mapped[datetime] = mapped_column(
-        init=False, server_default=func.now()
-    )
+    created_at: Mapped[datetime] = mapped_column(init=False, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         init=False, server_default=func.now(), onupdate=func.now()
     )

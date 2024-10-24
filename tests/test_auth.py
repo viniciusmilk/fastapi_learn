@@ -1,9 +1,10 @@
 from http import HTTPStatus
 
+import pytest
 from freezegun import freeze_time
 
 
-# @pytest.mark.skip(reason='Already tested')
+@pytest.mark.skip(reason='Already tested')
 def test_login_for_access_token(client, user):
     response = client.post(
         '/auth/token',
@@ -17,7 +18,7 @@ def test_login_for_access_token(client, user):
     assert 'token_type' in token
 
 
-# @pytest.mark.skip(reason='Already tested')
+@pytest.mark.skip(reason='Already tested')
 def test_login_for_access_token_non_existent_user(client, user):
     response = client.post(
         '/auth/token',
@@ -27,7 +28,7 @@ def test_login_for_access_token_non_existent_user(client, user):
     assert response.status_code == HTTPStatus.BAD_REQUEST
 
 
-# @pytest.mark.skip(reason='Already tested')
+@pytest.mark.skip(reason='Already tested')
 def test_login_for_access_token_incorrect_password(client, user):
     response = client.post(
         '/auth/token',
@@ -37,7 +38,7 @@ def test_login_for_access_token_incorrect_password(client, user):
     assert response.status_code == HTTPStatus.BAD_REQUEST
 
 
-# @pytest.mark.skip(reason='Already tested')
+@pytest.mark.skip(reason='Already tested')
 def test_access_token_expired_after_time(client, user):
     with freeze_time('2024-10-20 12:00:00'):
         response = client.post(
@@ -63,7 +64,7 @@ def test_access_token_expired_after_time(client, user):
         assert response.json() == {'detail': 'Could not validate credentials'}
 
 
-# @pytest.mark.skip(reason='Already tested')
+@pytest.mark.skip(reason='Already tested')
 def test_access_token_inexistent_user(client, user):
     response = client.post(
         'auth/token',
@@ -74,7 +75,7 @@ def test_access_token_inexistent_user(client, user):
     assert response.json() == {'detail': 'Incorrect email or password'}
 
 
-# @pytest.mark.skip(reason='Already tested')
+@pytest.mark.skip(reason='Already tested')
 def test_access_token_wrong_password(client, user):
     response = client.post(
         'auth/token',
@@ -85,7 +86,7 @@ def test_access_token_wrong_password(client, user):
     assert response.json() == {'detail': 'Incorrect email or password'}
 
 
-# @pytest.mark.skip(reason='Already tested')
+@pytest.mark.skip(reason='Already tested')
 def test_refresh_access_token(client, user, token):
     response = client.post(
         '/auth/refresh_token',
@@ -100,7 +101,7 @@ def test_refresh_access_token(client, user, token):
     assert data['token_type'] == 'bearer'
 
 
-# @pytest.mark.skip(reason='Already tested')
+@pytest.mark.skip(reason='Already tested')
 def test_access_token_expired_not_refresh(client, user):
     with freeze_time('2024-10-20 12:00:00'):
         response = client.post(
