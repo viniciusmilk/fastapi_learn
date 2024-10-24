@@ -144,9 +144,7 @@ def test_update_user_integrity_error(client, user, other_user, token):
 
 # @pytest.mark.skip(reason='Already tested')
 def test_delete_user(client, user, token):
-    response = client.delete(
-        f'/users/{user.id}', headers={'Authorization': f'Bearer {token}'}
-    )
+    response = client.delete(f'/users/{user.id}', headers={'Authorization': f'Bearer {token}'})
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
         'message': 'User deleted successfully',
@@ -155,9 +153,7 @@ def test_delete_user(client, user, token):
 
 # @pytest.mark.skip(reason='Already tested')
 def test_delete_user_not_found(client, other_user, token):
-    response = client.delete(
-        f'/users/{other_user.id}', headers={'Authorization': f'Bearer {token}'}
-    )
+    response = client.delete(f'/users/{other_user.id}', headers={'Authorization': f'Bearer {token}'})
     assert response.status_code == HTTPStatus.FORBIDDEN
     assert response.json() == {
         'detail': 'Not enough permissions',

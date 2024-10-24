@@ -25,9 +25,7 @@ T_CurrentUser = Annotated[User, Depends(get_current_user)]
 @router.post('/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
 def create_user(user: UserSchema, session: T_Session):
     db_user = session.scalar(
-        select(User).where(
-            (User.username == user.username) | (User.email == user.email)
-        )
+        select(User).where((User.username == user.username) | (User.email == user.email))
     )
 
     if db_user:
@@ -44,9 +42,7 @@ def create_user(user: UserSchema, session: T_Session):
 
     hashed_password = get_password_hash(user.password)
 
-    db_user = User(
-        username=user.username, password=hashed_password, email=user.email
-    )
+    db_user = User(username=user.username, password=hashed_password, email=user.email)
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
@@ -82,9 +78,7 @@ def update_user(
     current_user: T_CurrentUser,
 ):
     if current_user.id != user_id:
-        raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions'
-        )
+        raise HTTPException(status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions')
 
     try:
         current_user.username = user.username

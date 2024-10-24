@@ -1,0 +1,22 @@
+# Ignorar caches e arquivos temporários
+
+**pycache**/
+.pytest_cache/
+.ruff_cache/
+
+# Ignorar diretórios não necessários
+
+tests/
+
+# Ignorar configurações sensíveis
+
+.env
+
+# Não ignorar arquivos essenciais
+
+!Dockerfile
+!entrypoint.sh
+!fast_zero/
+!pyproject.toml
+!poetry.lock
+!README.md

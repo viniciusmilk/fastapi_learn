@@ -66,23 +66,17 @@ def get_todos(  # noqa
     }
 
 
-@router.patch(
-    '/{todo_id}', status_code=HTTPStatus.OK, response_model=TodoPublic
-)
+@router.patch('/{todo_id}', status_code=HTTPStatus.OK, response_model=TodoPublic)
 def patch_todo(
     todo_id: int,
     session: T_Session,
     user: T_CurrentUser,
     todo: TodoUpdate,
 ):
-    db_todo = session.scalar(
-        select(Todo).where(Todo.id == todo_id, Todo.user_id == user.id)
-    )
+    db_todo = session.scalar(select(Todo).where(Todo.id == todo_id, Todo.user_id == user.id))
 
     if not db_todo:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND, detail='Task not found'
-        )
+        raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail='Task not found')
 
     for key, value in todo.model_dump(exclude_unset=True).items():
         setattr(db_todo, key, value)
@@ -104,9 +98,7 @@ def delete_todo(
     session: T_Session,
     user: T_CurrentUser,
 ):
-    db_todo = session.scalar(
-        select(Todo).where(Todo.id == todo_id, Todo.user_id == user.id)
-    )
+    db_todo = session.scalar(select(Todo).where(Todo.id == todo_id, Todo.user_id == user.id))
 
     if not db_todo:
         raise HTTPException(
