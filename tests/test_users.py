@@ -1,11 +1,8 @@
 from http import HTTPStatus
 
-import pytest
-
 from ..fast_zero.schemas import UserPublic
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_create_user(client):
     response = client.post(
         '/users',
@@ -24,7 +21,6 @@ def test_create_user(client):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_create_user_username_exists(client, user):
     response = client.post(
         '/users',
@@ -41,7 +37,6 @@ def test_create_user_username_exists(client, user):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_create_user_email_exists(client, user):
     response = client.post(
         '/users',
@@ -58,14 +53,12 @@ def test_create_user_email_exists(client, user):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_read_users(client):
     response = client.get('/users')
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'users': []}
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_read_users_with_user(client, user):
     user_schema = UserPublic.model_validate(user).model_dump()
     response = client.get('/users')
@@ -73,7 +66,6 @@ def test_read_users_with_user(client, user):
     assert response.json() == {'users': [user_schema]}
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_read_user(client, user):
     user_schema = UserPublic.model_validate(user).model_dump()
     response = client.get('/users/1')
@@ -81,7 +73,6 @@ def test_read_user(client, user):
     assert response.json() == user_schema
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_read_user_not_found(client, user):
     response = client.get('/users/2')
     assert response.status_code == HTTPStatus.NOT_FOUND
@@ -90,7 +81,6 @@ def test_read_user_not_found(client, user):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_update_user(client, user, token):
     response = client.put(
         f'/users/{user.id}',
@@ -110,7 +100,6 @@ def test_update_user(client, user, token):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_update_user_not_current_user(client, user, other_user, token):
     response = client.put(
         f'/users/{other_user.id}',
@@ -127,7 +116,6 @@ def test_update_user_not_current_user(client, user, other_user, token):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_update_user_integrity_error(client, user, other_user, token):
     response = client.put(
         f'/users/{user.id}',
@@ -144,7 +132,6 @@ def test_update_user_integrity_error(client, user, other_user, token):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_delete_user(client, user, token):
     response = client.delete(f'/users/{user.id}', headers={'Authorization': f'Bearer {token}'})
     assert response.status_code == HTTPStatus.OK
@@ -153,7 +140,6 @@ def test_delete_user(client, user, token):
     }
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_delete_user_not_found(client, other_user, token):
     response = client.delete(f'/users/{other_user.id}', headers={'Authorization': f'Bearer {token}'})
     assert response.status_code == HTTPStatus.FORBIDDEN

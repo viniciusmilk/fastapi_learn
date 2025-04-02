@@ -1,12 +1,10 @@
 from http import HTTPStatus
 
-import pytest
 from jwt import decode
 
 from ..fast_zero.security import create_access_token, settings
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_create_access_token():
     data = {'secret': 'Meu segredo'}
     token = create_access_token(data)
@@ -17,7 +15,6 @@ def test_create_access_token():
     assert 'exp' in decoded_data
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_jwt_invalid_token(client):
     response = client.delete('/users/1', headers={'Authorization': 'Bearer invalid_token'})
 
@@ -25,7 +22,6 @@ def test_jwt_invalid_token(client):
     assert response.json() == {'detail': 'Could not validate credentials'}
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_get_current_user_user_not_found(client):
     token = create_access_token({'sub': 'not_found'})
     response = client.delete('/users/1', headers={'Authorization': f'Bearer {token}'})
@@ -34,7 +30,6 @@ def test_get_current_user_user_not_found(client):
     assert response.json() == {'detail': 'Could not validate credentials'}
 
 
-@pytest.mark.skip(reason='Already tested')
 def test_get_current_user_user_found(client):
     token = create_access_token({})
     response = client.delete('/users/1', headers={'Authorization': f'Bearer {token}'})
