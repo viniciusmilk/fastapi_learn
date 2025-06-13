@@ -1,16 +1,28 @@
 from logging.config import fileConfig
+import os # Importa o módulo os para acessar variáveis de ambiente
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
 
+# Importa a classe Settings
 from fast_zero.settings import Settings
 from fast_zero.models import table_registry
+
+# Importa dotenv para carregar o arquivo .env explicitamente
+from dotenv import load_dotenv
+
+# Carrega o arquivo .env explicitamente.
+# Isso garante que as variáveis definidas lá estejam disponíveis para Settings.
+load_dotenv()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+# Usar a Settings para obter a DATABASE_URL.
+# Como load_dotenv() foi chamado, Settings agora encontrará as variáveis.
 config.set_main_option('sqlalchemy.url', Settings().DATABASE_URL)
 
 # Interpret the config file for Python logging.

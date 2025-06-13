@@ -8,10 +8,10 @@ table_registry = registry()
 
 
 class TodoState(str, Enum):
-    draft = ('draft',)
-    todo = ('todo',)
-    done = ('done',)
-    doing = ('doing',)
+    draft = 'draft'
+    todo = 'todo'
+    done = 'done'
+    doing = 'doing'
     trash = 'trash'
 
 

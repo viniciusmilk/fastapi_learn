@@ -224,4 +224,4 @@ def test_delete_todo(client, token, session, user):
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'message': 'Task ras been  deleted successfully'}
+    assert response.json() == {'message': 'Task has been  deleted successfully'}

@@ -1,20 +1,31 @@
-# Description: Dockerfile for the Python 3.12-slim image
 FROM python:3.12-slim
 
-# 
-ENV POETRY_VIRTUALENVS_CREATE=false
+# Instala dependências do sistema
+RUN apt-get update && \
+    apt-get install -y build-essential libpq-dev netcat-openbsd && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
+# Define diretório de trabalho
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+# Copia arquivos de dependências
+COPY pyproject.toml poetry.lock ./
+
+# Instala Poetry
+RUN pip install --no-cache-dir poetry
+
+# Instala dependências do projeto (sem criar virtualenv)
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi --only main
+
+# Copia o restante do código
 COPY . .
 
-RUN pip install poetry
+# Permite execução do entrypoint
+RUN chmod +x entrypoint.sh
 
-RUN poetry config installer.max-workers 10
-RUN poetry install --no-interaction --no-ansi
-
+# Expõe a porta da aplicação
 EXPOSE 8000
 
-CMD ["poetry", "run", "uvicorn", "--host", "0.0.0.0", "fast_zero.app:app"]
+# Define o entrypoint
+ENTRYPOINT ["./entrypoint.sh"]

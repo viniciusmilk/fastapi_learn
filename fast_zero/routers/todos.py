@@ -109,4 +109,4 @@ def delete_todo(
     session.delete(db_todo)
     session.commit()
 
-    return {'message': 'Task ras been  deleted successfully'}
+    return {'message': 'Task has been  deleted successfully'}
